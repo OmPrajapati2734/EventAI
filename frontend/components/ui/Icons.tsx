@@ -473,6 +473,51 @@ export function Gift({ className, ...props }: IconProps) {
   );
 }
 
+export function Shuffle({ className, ...props }: IconProps) {
+  return baseSvg(
+    <>
+      <path d="m16 3 5 5-5 5" />
+      <path d="M4 20 21 3" />
+      <path d="M21 16v5h-5" />
+      <path d="M15 15l6 6" />
+      <path d="M4 4l5 5" />
+    </>,
+    className,
+    props
+  );
+}
+
+export function Crown({ className, ...props }: IconProps) {
+  return baseSvg(
+    <>
+      <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.203a4 4 0 0 1-3.86 2.928H8.713a4 4 0 0 1-3.86-2.928L2.019 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z" />
+      <path d="M5 21h14" />
+    </>,
+    className,
+    props
+  );
+}
+
+export function Gem({ className, ...props }: IconProps) {
+  return baseSvg(
+    <>
+      <path d="M6 3h12l4 6-10 12L2 9z" />
+      <path d="M11 3 8 9l4 12 4-12-3-6" />
+      <path d="M2 9h20" />
+    </>,
+    className,
+    props
+  );
+}
+
+export function Zap({ className, ...props }: IconProps) {
+  return baseSvg(
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />,
+    className,
+    props
+  );
+}
+
 // Backwards-compatible aliases for existing files
 export const SparklesIcon = Sparkles;
 export const CalendarIcon = Calendar;
