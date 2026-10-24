@@ -1,10 +1,30 @@
 import type { EventPlan, SetupWizardData, BudgetItem } from './types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+/**
+ * Resolves the target API URL.
+ * - Server functions: uses process.env.BACKEND_URL (injected by Vercel service binding).
+ * - Client browser: uses relative path (or NEXT_PUBLIC_API_URL) to hit the current origin.
+ * - Local fallback: http://localhost:3000.
+ */
+export function getApiUrl(endpointPath: string): string {
+  const normalizedPath = endpointPath.startsWith('/') ? endpointPath : `/${endpointPath}`;
+
+  if (typeof window === 'undefined') {
+    const serverBase = process.env['BACKEND_URL'] || process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3000';
+    return new URL(normalizedPath, serverBase).toString();
+  }
+
+  if (process.env['NEXT_PUBLIC_API_URL']) {
+    return new URL(normalizedPath, process.env['NEXT_PUBLIC_API_URL']).toString();
+  }
+
+  return normalizedPath;
+}
 
 export async function createPlanWithAi(data: SetupWizardData): Promise<EventPlan> {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/v1/event-plans/ai-generate`, {
+    const url = getApiUrl('/api/v1/event-plans/ai-generate');
+    const res = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -30,16 +50,16 @@ export async function addBudgetItemToPlan(
   enforceLimit = false
 ): Promise<EventPlan> {
   try {
-    const res = await fetch(
-      `${API_BASE_URL}/api/v1/event-plans/${encodeURIComponent(planId)}/budget-items?enforceLimit=${enforceLimit}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(item),
-      }
+    const url = getApiUrl(
+      `/api/v1/event-plans/${encodeURIComponent(planId)}/budget-items?enforceLimit=${enforceLimit}`
     );
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(item),
+    });
 
     if (res.ok) {
       const json = await res.json();
@@ -57,16 +77,14 @@ export async function regenerateThemes(
   preferences?: string
 ): Promise<EventPlan> {
   try {
-    const res = await fetch(
-      `${API_BASE_URL}/api/v1/event-plans/${encodeURIComponent(planId)}/generate-themes`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ preferences }),
-      }
-    );
+    const url = getApiUrl(`/api/v1/event-plans/${encodeURIComponent(planId)}/generate-themes`);
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ preferences }),
+    });
 
     if (res.ok) {
       const json = await res.json();
